@@ -27,6 +27,8 @@ int main()
 
     cout << endl;
     
+    a.front();//返回手元素的引用
+    
     //删除双端队列中最后一个元素
     a.pop_back();
     //删除双端队列中最前一个元素
@@ -50,6 +52,18 @@ int main()
     if(a.empty()){
            cout << "deque is null a.size =" << a.size() << endl;
     }
+    
+    deque<string> b;
+    b.push_back("001");
+    string bfront = b.front();
+    cout << "deque bfront.c_str() =" << bfront.c_str() << endl;
+    b.clear();
+    if(b.front().empty()){
+         cout << "deque bfrontnull  size = " << b.size() << endl;
+    }else{
+         cout << "deque bfrontsize =" << b.size() << endl;
+    }
+    
     system("pause");
     return 0;
 }
