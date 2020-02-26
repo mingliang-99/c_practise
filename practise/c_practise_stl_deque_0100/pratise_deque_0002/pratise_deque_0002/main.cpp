@@ -10,6 +10,27 @@
 #include<deque>
 #include<algorithm>
 using namespace std;
+
+class Node {
+public:
+    Node(int nodeid);
+    virtual ~Node();
+    
+    int nodeId() const {return mNodeid;}
+private:
+    int mNodeid;
+};
+
+using NodePtr = std::shared_ptr<Node>;
+
+
+Node::Node(int nodeid){
+    
+}
+Node::~Node(){
+    
+}
+
 int main()
 {
     deque<int> a;
@@ -53,6 +74,7 @@ int main()
            cout << "deque is null a.size =" << a.size() << endl;
     }
     
+    //字符串相关的deque
     deque<string> b;
     b.push_back("001");
     string bfront = b.front();
@@ -63,6 +85,21 @@ int main()
     }else{
          cout << "deque bfrontsize =" << b.size() << endl;
     }
+    
+    
+    //class 相关的deque
+    
+    std::deque<NodePtr> nodes;
+    auto node = std::make_shared<Node>(1);
+    nodes.push_back(node);
+    
+    cout << "nodes.size() =" << nodes.size() << endl;
+    
+    /*
+    {"duration_ms": 734, "bandwidth_kbps": 5544, "latency_ms": 20},
+    {"duration_ms": 1000, "bandwidth_kbps": 9665, "latency_ms": 20},
+    {"duration_ms": 1001, "bandwidth_kbps": 11967, "latency_ms": 20},
+    */
     
     system("pause");
     return 0;
