@@ -127,18 +127,18 @@ void preOrder(TreeNode *root)
 {
     stack<TreeNode*> st;
     while(root||!st.empty()){
-    if(root){ // 把 左节点顺序入队打印
-        st.push(root);// (1) 节点入栈
-        if(root)
-            cout<<root->val<<' ';//打印 （1）节点
-        if(root)
-            root=root->left; //（1）的 左孩子（2）节点 作为根节点，
-    }else{ //取最后一个入队的节点的右孩子，如果没有继续取倒数第二个节点的右孩子，取到后最为跟节点
-        root=st.top();
-        st.pop(); //移除栈顶元素
-        if(root) //
-            root=root->right;
-    }
+        if(root){ // 把 左节点顺序入队打印
+            st.push(root);// (1) 节点入栈
+            if(root)
+                cout<<root->val<<' ';//打印 （1）节点
+            if(root)
+                root=root->left; //（1）的 左孩子（2）节点 作为根节点，
+        }else{ //取最后一个入队的节点的右孩子，如果没有继续取倒数第二个节点的右孩子，取到后最为跟节点
+            root=st.top();
+            st.pop(); //移除栈顶元素
+            if(root) //
+                root=root->right;
+        }
     }
 }
 
@@ -220,7 +220,6 @@ void postOrder(TreeNode *root)
         }
     }
 }
-
 
 //二叉树遍历  先序 中序 后序
 //
