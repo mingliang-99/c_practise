@@ -27,6 +27,24 @@
 #include <sstream>
 #include <string>
 using namespace std;
+
+
+//Definition for a binary tree node.
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+/*
+ 递归总结
+ 1.确定递归函数的参数和返回值
+ 2.确定终止条件
+ 3.确定单层递归的逻辑
+ 
+ */
+
 //深度优先搜索算法
 /*
 算法思想：
@@ -38,12 +56,96 @@ using namespace std;
 */
 
 
-//Definition for a binary tree node.
-struct TreeNode {
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+class Solution {
+public:
+    void traversal(TreeNode* cur, vector<int>& vec) {
+        if (cur == NULL) return;
+        vec.push_back(cur->val);    // 中
+        traversal(cur->left, vec);  // 左
+        traversal(cur->right, vec); // 右
+    }
+    vector<int> preorderTraversal(TreeNode* root) {
+        vector<int> result;
+        traversal(root, result);
+        return result;
+    }
+};
+
+/*
+ 前序遍历是中左右，每次先处理的是中间节点，那么先将跟节点放入栈中，然后将右孩子加入栈，再加入左孩子。
+ 为什么要先加入 右孩子，再加入左孩子呢？因为这样出栈的时候才是中左右的顺序
+ */
+
+class SolutionpreOrder {
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        stack<TreeNode*> st;
+        vector<int> result;
+        st.push(root);
+        while (!st.empty()) {
+            TreeNode* node = st.top();                      // 中
+            st.pop();
+            if (node != NULL) result.push_back(node->val);
+            else continue;
+            st.push(node->right);                           // 右
+            st.push(node->left);                            // 左
+        }
+        return result;
+    }
+};
+
+/*
+ 为了解释清楚，我说明一下 刚刚在迭代的过程中，其实我们有两个操作：
+
+ 「处理：将元素放进result数组中」
+ 「访问：遍历节点」
+ 分析一下为什么刚刚写的前序遍历的代码，不能和中序遍历通用呢，因为前序遍历的顺序是中左右，先访问的元素是中间节点，要处理的元素也是中间节点，所以刚刚才能写出相对简洁的代码，「因为要访问的元素和要处理的元素顺序是一致的，都是中间节点。」
+
+ 那么再看看中序遍历，中序遍历是左中右，先访问的是二叉树顶部的节点，然后一层一层向下访问，直到到达树左面的最底部，再开始处理节点（也就是在把节点的数值放进result数组中），这就造成了「处理顺序和访问顺序是不一致的。」
+
+ 那么「在使用迭代法写中序遍历，就需要借用指针的遍历来帮助访问节点，栈则用来处理节点上的元素。
+ */
+class SolutioninorderTraversal {
+public:
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int> result;
+        stack<TreeNode*> st;
+        TreeNode* cur = root;
+        while (cur != NULL || !st.empty()) {
+            if (cur != NULL) { // 指针来访问节点，访问到最底层
+                st.push(cur); // 讲访问的节点放进栈
+                cur = cur->left;                // 左
+            } else {
+                cur = st.top(); // 从栈里弹出的数据，就是要处理的数据（放进result数组里的数据）
+                st.pop();
+                result.push_back(cur->val);     // 中
+                cur = cur->right;               // 右
+            }
+        }
+        return result;
+    }
+};
+
+/*
+ 再来看后序遍历，先序遍历是中左右，后续遍历是左右中，那么我们只需要调整一下先序遍历的代码顺序，就变成中右左的遍历顺序，然后在反转result数组，输出的结果顺序就是左右中了，如下图：
+ */
+class SolutionpostorderTraversal {
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        stack<TreeNode*> st;
+        vector<int> result;
+        st.push(root);
+        while (!st.empty()) {
+            TreeNode* node = st.top();
+            st.pop();
+            if (node != NULL) result.push_back(node->val);
+            else continue;
+            st.push(node->left); // 相对于前序遍历，这更改一下入栈顺序
+            st.push(node->right);
+        }
+        reverse(result.begin(), result.end()); // 将结果反转之后就是左右中的顺序了
+        return result;
+    }
 };
 
 /*
@@ -63,6 +165,8 @@ void PreOrderTraverse (TreeNode *T)
         PreOrderTraverse (T -> right) ;
     }
 }
+
+
 
 /*
 2 中序遍历（InOrder）
@@ -141,6 +245,7 @@ void preOrder(TreeNode *root)
         }
     }
 }
+
 
 void inOrder(TreeNode *root)
 {
