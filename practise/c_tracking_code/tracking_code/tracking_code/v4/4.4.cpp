@@ -45,7 +45,7 @@ public:
         delete[] buf;
     }
     void push(int stackNum, int val){
-        int idx = stackNum*size + ptop[stackNum] + 1;
+        int idx = stackNum*size + ptop[stackNum] + 1;//利用数组的偏移，计算栈的位置
         buf[idx] = val;
         ++ptop[stackNum];
     }

@@ -11,119 +11,34 @@
 题目
 原文：
 
-Describe how you could use a single array to implement three stacks.
+Given a binary search tree, design an algorithm which creates a linked list of all the nodes at each depth (i.e., if you have a tree with depth D, you’ll have D linked lists).
 
 译文：
 
-你如何只用一个数组实现三个栈？
+给定一棵二叉查找树，设计算法，将每一层的所有结点构建为一个链表(也就是说， 如果树有D层，那么你将构建出D个链表)
 
 解答
-我们可以很容易地用一个数组来实现一个栈，压栈就往数组里插入值，栈顶指针加1；
-出栈就直接将栈顶指针减1；
-取栈顶值就把栈顶指针指向的单元的值返回；
-判断是否为空就直接看栈顶指针是否为-1。
+这道题目本质上是个BFS，也就是说，如果已经构建了第i层结点的链表， 那么将此链表中每个结点的左右孩子结点取出，即可构建第i+1层结点的链表。 设结点类型为Node，那么指向每一层链表头结点的类型为list<Node*>， 将每一层头结点指针放到vector中。如果当前层的链表不为空， 那么将该链表的结点依次取出，然后将这些结点的不为空的孩子放入新的链表中
 
-如果要在一个数组里实现3个栈，可以将该数组分为3个部分。
-如果我们并不知道哪个栈将装 入更多的数据，就直接将这个数组平均分为3个部分，
-每个部分维护一个栈顶指针， 根据具体是对哪个栈进行操作，用栈顶指针去加上相应的偏移量即可
 
-/*
- ptop 0 1 3 为三个栈顶的位置
-*/
 
-#include <iostream>
-using namespace std;
-
-class stack3{
-public:
-    stack3(int size = 300){
-        buf = new int[size*3];
-        ptop[0]=ptop[1]=ptop[2]=-1;
-        this->size = size;
+vector<list<Node*> > find_level_linklists(Node *head){
+    vector<list<Node*>> res;
+    int level = 0;
+    list<Node*> li;//链表头
+    li.push_back(head);
+    res.push_back(li);//
+    while(!res[level].empty()){
+        list<Node*> layList;//每一层的链表节点，需要把每一层的左节点和右节点都存进来。
+        list<Node*>::iterator it;
+        for(it=res[level].begin(); it!=res[level].end(); ++it){//一层二叉树有几个节点
+            Node *n = *it;
+            if(n->lchild) layList.push_back(n->lchild);
+            if(n->rchild) layList.push_back(n->rchild);
+        }
+        ++level;
+        res.push_back(layList);
     }
-    ~stack3(){
-        delete[] buf;
-    }
-    void push(int stackNum, int val){
-        int idx = stackNum*size + ptop[stackNum] + 1;
-        buf[idx] = val;
-        ++ptop[stackNum];
-    }
-    void pop(int stackNum){
-        --ptop[stackNum];
-    }
-    int top(int stackNum){
-        int idx = stackNum*size + ptop[stackNum];
-        return buf[idx];
-    }
-    bool empty(int stackNum){
-        return ptop[stackNum]==-1;
-    }
-
-private:
-    int *buf;
-    int ptop[3];
-    int size;
-};
-
-typedef struct node{
-    int val,preIdx;
-}node;
-
-class stack3_1{
-public:
-    stack3_1(int totalSize = 900){
-        buf = new node[totalSize];
-        ptop[0]=ptop[1]=ptop[2]=-1;
-        this->totalSize = totalSize;
-        cur = 0;
-    }
-    ~stack3_1(){
-        delete[] buf;
-    }
-    void push(int stackNum, int val){
-        buf[cur].val = val;
-        buf[cur].preIdx = ptop[stackNum];
-        ptop[stackNum] = cur;
-        ++cur;
-    }
-    void pop(int stackNum){
-        ptop[stackNum] = buf[ptop[stackNum]].preIdx;
-    }
-    int top(int stackNum){
-        return buf[ptop[stackNum]].val;
-    }
-    bool empty(int stackNum){
-        return ptop[stackNum]==-1;
-    }
-
-private:
-    node *buf;
-    int ptop[3];
-    int totalSize;
-    int cur;
-};
-
-int main(){
-    stack3_1 mystack;//stack3 mystack;
-    for(int i=0; i<10; ++i)
-        mystack.push(0, i);
-    for(int i=10; i<20; ++i)
-        mystack.push(1, i);
-    for(int i=100; i<110; ++i)
-        mystack.push(2, i);
-    for(int i=0; i<3; ++i)
-        cout<<mystack.top(i)<<" ";
-
-    cout<<endl;
-    for(int i=0; i<3; ++i){
-        mystack.pop(i);
-        cout<<mystack.top(i)<<" ";
-    }
-    mystack.push(0, 111);
-    mystack.push(1, 222);
-    mystack.push(2, 333);
-    for(int i=0; i<3; ++i)
-        cout<<mystack.top(i)<<" ";
-    return 0;
+    return res;
 }
+

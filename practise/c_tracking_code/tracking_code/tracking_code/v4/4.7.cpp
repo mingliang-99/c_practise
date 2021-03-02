@@ -11,119 +11,32 @@
 题目
 原文：
 
-Describe how you could use a single array to implement three stacks.
+You have two very large binary trees: T1, with millions of nodes, and T2, with hundreds of nodes. Create an algorithm to decide if T2 is a subtree of T1
 
 译文：
 
-你如何只用一个数组实现三个栈？
+有两棵很大的二叉树：T1有上百万个结点，T2有上百个结点。写程序判断T2是否为T1的子树。
 
 解答
-我们可以很容易地用一个数组来实现一个栈，压栈就往数组里插入值，栈顶指针加1；
-出栈就直接将栈顶指针减1；
-取栈顶值就把栈顶指针指向的单元的值返回；
-判断是否为空就直接看栈顶指针是否为-1。
+我觉得这道题目意欲考察如何在二叉树中结点数量非常巨大的情况下进行快速的查找与匹配， 不过除了常规的暴力法，我暂时想不到什么高效的方法。暴力法就很简单了， 先在T1中找到T2的根结点，然后依次去匹配它们的左右子树即可。
 
-如果要在一个数组里实现3个栈，可以将该数组分为3个部分。
-如果我们并不知道哪个栈将装 入更多的数据，就直接将这个数组平均分为3个部分，
-每个部分维护一个栈顶指针， 根据具体是对哪个栈进行操作，用栈顶指针去加上相应的偏移量即可
+这里要注意的一点是，T1中的结点可能包含多个与T2根结点的值相同的结点。因此， 在T1中查找T2的根结点时，如果找到与T2匹配的子树，则返回真值；否则，还要继续查找， 直到在T1中找到一棵匹配的子树或是T1中的结点都查找完毕
 
-/*
- ptop 0 1 3 为三个栈顶的位置
-*/
 
-#include <iostream>
-using namespace std;
-
-class stack3{
-public:
-    stack3(int size = 300){
-        buf = new int[size*3];
-        ptop[0]=ptop[1]=ptop[2]=-1;
-        this->size = size;
+bool match(Node* r1, Node* r2){
+    if(r1 == NULL && r2 == NULL) return true;
+    else if(r1 == NULL || r2 == NULL) return false;
+    else if(r1->key != r2->key) return false;
+    else return match(r1->lchild, r2->lchild) && match(r1->rchild, r2->rchild);
+}
+bool subtree(Node* r1, Node* r2){
+    if(r1 == NULL) return false;
+    else if(r1->key == r2->key){
+        if(match(r1, r2)) return true;
     }
-    ~stack3(){
-        delete[] buf;
-    }
-    void push(int stackNum, int val){
-        int idx = stackNum*size + ptop[stackNum] + 1;
-        buf[idx] = val;
-        ++ptop[stackNum];
-    }
-    void pop(int stackNum){
-        --ptop[stackNum];
-    }
-    int top(int stackNum){
-        int idx = stackNum*size + ptop[stackNum];
-        return buf[idx];
-    }
-    bool empty(int stackNum){
-        return ptop[stackNum]==-1;
-    }
-
-private:
-    int *buf;
-    int ptop[3];
-    int size;
-};
-
-typedef struct node{
-    int val,preIdx;
-}node;
-
-class stack3_1{
-public:
-    stack3_1(int totalSize = 900){
-        buf = new node[totalSize];
-        ptop[0]=ptop[1]=ptop[2]=-1;
-        this->totalSize = totalSize;
-        cur = 0;
-    }
-    ~stack3_1(){
-        delete[] buf;
-    }
-    void push(int stackNum, int val){
-        buf[cur].val = val;
-        buf[cur].preIdx = ptop[stackNum];
-        ptop[stackNum] = cur;
-        ++cur;
-    }
-    void pop(int stackNum){
-        ptop[stackNum] = buf[ptop[stackNum]].preIdx;
-    }
-    int top(int stackNum){
-        return buf[ptop[stackNum]].val;
-    }
-    bool empty(int stackNum){
-        return ptop[stackNum]==-1;
-    }
-
-private:
-    node *buf;
-    int ptop[3];
-    int totalSize;
-    int cur;
-};
-
-int main(){
-    stack3_1 mystack;//stack3 mystack;
-    for(int i=0; i<10; ++i)
-        mystack.push(0, i);
-    for(int i=10; i<20; ++i)
-        mystack.push(1, i);
-    for(int i=100; i<110; ++i)
-        mystack.push(2, i);
-    for(int i=0; i<3; ++i)
-        cout<<mystack.top(i)<<" ";
-
-    cout<<endl;
-    for(int i=0; i<3; ++i){
-        mystack.pop(i);
-        cout<<mystack.top(i)<<" ";
-    }
-    mystack.push(0, 111);
-    mystack.push(1, 222);
-    mystack.push(2, 333);
-    for(int i=0; i<3; ++i)
-        cout<<mystack.top(i)<<" ";
-    return 0;
+    else return subtree(r1->lchild, r2) || subtree(r1->rchild, r2);
+}
+bool contain_tree(Node* r1, Node* r2){
+    if(r2 == NULL) return true;
+    else return subtree(r1, r2);
 }

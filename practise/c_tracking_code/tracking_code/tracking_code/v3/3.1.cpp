@@ -29,6 +29,7 @@ Describe how you could use a single array to implement three stacks.
 
 /*
  ptop 0 1 3 为三个栈顶的位置
+ 利用数组的偏移计算栈的位置
 */
 
 #include <iostream>
