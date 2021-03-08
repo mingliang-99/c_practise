@@ -29,6 +29,8 @@
 		F407918525DFB0E20084D2B6 /* v2 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = v2; sourceTree = "<group>"; };
 		F407918825E0ADEC0084D2B6 /* v3 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = v3; sourceTree = "<group>"; };
 		F407919E25E4793F0084D2B6 /* v4 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = v4; sourceTree = "<group>"; };
+		F428547925EF0D5D00C0EE01 /* v5 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = v5; sourceTree = "<group>"; };
+		F428547C25F3214C00C0EE01 /* v8 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = v8; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +63,8 @@
 		F407915125DCB7280084D2B6 /* tracking_code */ = {
 			isa = PBXGroup;
 			children = (
+				F428547C25F3214C00C0EE01 /* v8 */,
+				F428547925EF0D5D00C0EE01 /* v5 */,
 				F407919E25E4793F0084D2B6 /* v4 */,
 				F407918825E0ADEC0084D2B6 /* v3 */,
 				F407918325DFB0E20084D2B6 /* main.cpp */,
